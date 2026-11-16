@@ -2,12 +2,16 @@
 
 Interface de estudo para gestão financeira, desenvolvida com Angular.
 
-## Requisitos
+## Requisitos do trabalho
 
-- Node.js 24.22.1
-- npm 12.2.1
+- Front-end em Angular e back-end em Quarkus.
+- Cadastro de contas, categorias e transações.
+- Filtros de transações por conta e categoria.
+- Transferências entre contas.
+- Tela inicial com saldo por conta e saldo geral.
+- Autenticação com JWT em cookie HttpOnly.
 
-## Funcionalidades
+## Funcionalidades atuais
 
 - Navegação entre categorias e contas.
 - Edição do nome de uma categoria e exibição em alerta.
@@ -16,11 +20,13 @@ Interface de estudo para gestão financeira, desenvolvida com Angular.
 
 ## Como usar
 
-Na pasta do projeto, execute
+Com Node.js 24.22.1 e npm 12.2.1 instalados, execute na pasta do projeto
 
 ```bash
 npm ci
 npm start
 ```
 
-Acesse <http://localhost:4200/>.
+## Back-end
+
+[back-end-quarkus](https://github.com/fernando-bastian/back-end-quarkus)
