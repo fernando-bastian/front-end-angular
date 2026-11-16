@@ -1,1 +1,42 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f6f2;
+  color: #243b32;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid #42866d;
+  outline-offset: 4px;
+}
+
+.page-heading {
+  margin-bottom: 32px;
+}
+
+.page-heading h2 {
+  margin: 0 0 8px;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -1.2px;
+}
+
+.panel {
+  overflow-wrap: anywhere;
+  border: 1px solid #e0e6de;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 24px rgb(28 52 39 / 3%);
+}

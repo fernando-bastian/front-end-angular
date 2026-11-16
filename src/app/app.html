@@ -1,2 +1,28 @@
-Meu app
-<router-outlet></router-outlet>
+<a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+<div class="app-layout">
+  <header class="sidebar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">f.</span>
+      <h1>Financeiro</h1>
+    </div>
+
+    <nav aria-label="Navegação principal">
+      <a routerLink="/pagina1" routerLinkActive="ativo" ariaCurrentWhenActive="page">
+        <span class="nav-icon" aria-hidden="true">▦</span>
+        Categorias
+      </a>
+      <a routerLink="/conta" routerLinkActive="ativo" ariaCurrentWhenActive="page">
+        <span class="nav-icon" aria-hidden="true">▣</span>
+        Contas
+      </a>
+    </nav>
+
+    <p class="project-status">Projeto em desenvolvimento</p>
+  </header>
+
+  <main id="conteudo" tabindex="-1">
+    <div class="page-content">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
