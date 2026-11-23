@@ -1,23 +1,29 @@
 import { Routes } from '@angular/router';
-import { Pagina1 } from './pagina1/pagina1';
-import { Conta } from './conta/conta';
+import { Cadastros } from './cadastros/cadastros';
+import { Inicio } from './inicio/inicio';
+import { Login } from './login/login';
+import { Transacoes } from './transacoes/transacoes';
+import { Transferencias } from './transferencias/transferencias';
+import { sessaoGuard } from './core/sessao.guard';
 
 export const routes: Routes = [
+  { path: 'login', component: Login },
+  { path: '', component: Inicio, canActivate: [sessaoGuard], pathMatch: 'full' },
   {
-    path: '',
-    redirectTo: 'pagina1',
-    pathMatch: 'full',
+    path: 'contas',
+    component: Cadastros,
+    canActivate: [sessaoGuard],
+    data: { recurso: 'contas', titulo: 'Contas' },
   },
   {
-    path: 'pagina1',
-    component: Pagina1,
+    path: 'categorias',
+    component: Cadastros,
+    canActivate: [sessaoGuard],
+    data: { recurso: 'categorias', titulo: 'Categorias' },
   },
-  {
-    path: 'conta',
-    component: Conta,
-  },
-  {
-    path: '**',
-    redirectTo: 'pagina1',
-  },
+  { path: 'transacoes', component: Transacoes, canActivate: [sessaoGuard] },
+  { path: 'transferencias', component: Transferencias, canActivate: [sessaoGuard] },
+  { path: 'pagina1', redirectTo: 'categorias' },
+  { path: 'conta', redirectTo: 'contas' },
+  { path: '**', redirectTo: '' },
 ];

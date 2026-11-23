@@ -12,7 +12,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -39,4 +40,200 @@ input {
   border-radius: 16px;
   background: #fff;
   box-shadow: 0 4px 24px rgb(28 52 39 / 3%);
+}
+
+a {
+  color: #256c52;
+  text-underline-offset: 3px;
+}
+.page-heading p {
+  margin: 0;
+  color: #617369;
+}
+.form-panel,
+.lista-panel,
+.login-panel {
+  padding: clamp(20px, 3vw, 32px);
+  margin-bottom: 24px;
+}
+h3 {
+  margin: 0 0 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.campo {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 20px;
+  min-width: 0;
+}
+label {
+  font-size: 14px;
+  font-weight: 500;
+}
+input,
+select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #b7c8bc;
+  border-radius: 8px;
+  background: #fff;
+  color: #243b32;
+}
+button {
+  min-height: 44px;
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 8px;
+  background: #173f35;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:hover:not(:disabled) {
+  background: #275b48;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.campos-grade {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 20px;
+}
+.campo-largo {
+  grid-column: 1 / -1;
+}
+.mensagem {
+  padding: 14px 18px;
+  border-radius: 8px;
+  background: #e7ede3;
+  overflow-wrap: anywhere;
+}
+.erro {
+  background: #fcecea;
+  color: #8c2626;
+}
+.sucesso {
+  background: #e0f0dc;
+  color: #215134;
+}
+.lista-cadastros {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.lista-cadastros li {
+  padding: 14px 0;
+  border-bottom: 1px solid #edf0e9;
+}
+.lista-cadastros li:last-child {
+  border: 0;
+}
+.acoes-cadastro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.filtros .campo {
+  flex: 1 1 160px;
+  margin: 0;
+}
+.tabela-scroll {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+th,
+td {
+  padding: 14px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e6ece2;
+}
+th {
+  color: #5c6f62;
+  font-weight: 600;
+  white-space: nowrap;
+}
+td {
+  overflow-wrap: anywhere;
+  min-width: 100px;
+}
+.numero {
+  text-align: right;
+  white-space: nowrap;
+}
+.login-panel {
+  max-width: 460px;
+  margin: 32px auto;
+}
+.saldo-geral {
+  padding: clamp(24px, 4vw, 40px);
+  background: #173f35;
+  border-radius: 16px;
+  color: white;
+  margin-bottom: 32px;
+}
+.saldo-geral h3 {
+  color: #d1e2dc;
+  margin: 0;
+}
+.saldo-geral a {
+  color: #d5edb4;
+}
+.valor-destaque {
+  margin: 8px 0 16px;
+  font-size: clamp(30px, 5vw, 44px);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.grade-saldos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 20px;
+}
+.saldo-conta {
+  padding: 24px;
+}
+.saldo-conta h3 {
+  margin: 0 0 12px;
+}
+.valor-conta {
+  margin: 0;
+  font-size: 24px;
+  overflow-wrap: anywhere;
+}
+.titulo-secao {
+  margin-top: 32px;
+}
+.somente-leitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .campos-grade {
+    grid-template-columns: 1fr;
+  }
+  .filtros button {
+    width: 100%;
+  }
 }

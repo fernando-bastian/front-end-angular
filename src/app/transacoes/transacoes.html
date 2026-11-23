@@ -1,0 +1,137 @@
+<header class="page-heading">
+  <h2>Transações</h2>
+  <p>Registre e acompanhe suas movimentações.</p>
+</header>
+@if (erro()) {
+  <p class="mensagem erro" role="alert">{{ erro() }}</p>
+}
+@if (sucesso()) {
+  <p class="mensagem sucesso" role="status">{{ sucesso() }}</p>
+}
+@if (pronto() && (!contas().length || !categorias().length)) {
+  <p class="mensagem">
+    Para lançar uma transação, cadastre <a routerLink="/contas">uma conta</a> e
+    <a routerLink="/categorias">uma categoria</a>.
+  </p>
+}
+<section class="panel form-panel">
+  <h3>Nova transação</h3>
+  <form (ngSubmit)="salvar()" #form="ngForm">
+    <div class="campos-grade">
+      <div class="campo">
+        <label for="conta">Conta</label
+        ><select id="conta" name="conta" [(ngModel)]="contaId" required>
+          <option value="">Selecione</option>
+          @for (conta of contas(); track conta.id) {
+            <option [value]="conta.id">{{ conta.nome }}</option>
+          }
+        </select>
+      </div>
+      <div class="campo">
+        <label for="categoria">Categoria</label
+        ><select id="categoria" name="categoria" [(ngModel)]="categoriaId" required>
+          <option value="">Selecione</option>
+          @for (categoria of categorias(); track categoria.id) {
+            <option [value]="categoria.id">{{ categoria.nome }}</option>
+          }
+        </select>
+      </div>
+      <div class="campo">
+        <label for="tipo">Tipo</label
+        ><select id="tipo" name="tipo" [(ngModel)]="tipo">
+          <option value="RECEITA">Receita</option>
+          <option value="DESPESA">Despesa</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="valor">Valor (R$)</label
+        ><input
+          id="valor"
+          name="valor"
+          [(ngModel)]="valor"
+          inputmode="decimal"
+          placeholder="0,00"
+          required
+          maxlength="20"
+        />
+      </div>
+      <div class="campo">
+        <label for="data">Data</label
+        ><input id="data" name="data" type="date" [(ngModel)]="data" required />
+      </div>
+      <div class="campo">
+        <label for="descricao">Descrição (opcional)</label
+        ><input id="descricao" name="descricao" [(ngModel)]="descricao" maxlength="255" />
+      </div>
+    </div>
+    <button
+      type="submit"
+      [disabled]="
+        form.invalid || salvando() || !pronto() || !contas().length || !categorias().length
+      "
+    >
+      {{ salvando() ? 'Salvando...' : 'Salvar transação' }}
+    </button>
+  </form>
+</section>
+<section class="panel lista-panel" aria-labelledby="movimentacoes-titulo">
+  <h3 id="movimentacoes-titulo">Movimentações</h3>
+  <form class="filtros" (ngSubmit)="carregar()">
+    <div class="campo">
+      <label for="filtro-conta">Filtrar por conta</label
+      ><select id="filtro-conta" name="filtro-conta" [(ngModel)]="filtroConta">
+        <option value="">Todas as contas</option>
+        @for (conta of contas(); track conta.id) {
+          <option [value]="conta.id">{{ conta.nome }}</option>
+        }
+      </select>
+    </div>
+    <div class="campo">
+      <label for="filtro-categoria">Filtrar por categoria</label
+      ><select id="filtro-categoria" name="filtro-categoria" [(ngModel)]="filtroCategoria">
+        <option value="">Todas as categorias</option>
+        @for (categoria of categorias(); track categoria.id) {
+          <option [value]="categoria.id">{{ categoria.nome }}</option>
+        }
+      </select>
+    </div>
+    <button type="submit" [disabled]="carregando()">Filtrar</button>
+  </form>
+  @if (carregando()) {
+    <p role="status">Carregando transações...</p>
+  } @else {
+    <div class="tabela-scroll">
+      <table>
+        <caption class="somente-leitor">
+          Transações conforme os filtros selecionados
+        </caption>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Conta</th>
+            <th>Categoria</th>
+            <th>Tipo</th>
+            <th>Descrição</th>
+            <th class="numero">Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of itens(); track item.id) {
+            <tr>
+              <td>{{ item.data | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ nomeConta(item.contaId) }}</td>
+              <td>{{ nomeCategoria(item.categoriaId) }}</td>
+              <td>{{ tipoTexto(item.tipo) }}</td>
+              <td>{{ item.descricao || '—' }}</td>
+              <td class="numero">{{ item.valor | currency: 'BRL' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6">Nenhuma transação encontrada.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

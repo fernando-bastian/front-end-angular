@@ -90,6 +90,20 @@ nav a:focus-visible {
   font-size: 12px;
 }
 
+.sessao {
+  margin: 24px 12px 0;
+  padding-top: 16px;
+  border-top: 1px solid #477063;
+}
+.sessao p {
+  overflow-wrap: anywhere;
+}
+.sessao button {
+  width: 100%;
+  background: #d5edb4;
+  color: #173f35;
+}
+
 main {
   min-width: 0;
   padding: 64px clamp(24px, 5vw, 80px);

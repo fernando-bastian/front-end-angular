@@ -1,0 +1,76 @@
+<header class="page-heading">
+  <h2>{{ titulo }}</h2>
+  <p>Cadastre e consulte suas {{ recurso }}.</p>
+</header>
+@if (erro()) {
+  <p class="mensagem erro" role="alert">{{ erro() }}</p>
+}
+@if (sucesso()) {
+  <p class="mensagem sucesso" role="status">{{ sucesso() }}</p>
+}
+<section class="panel form-panel">
+  <h3>{{ editando() ? 'Editar conta' : 'Novo cadastro' }}</h3>
+  <form (ngSubmit)="salvar()" #form="ngForm">
+    <div class="campo">
+      <label for="nome">Nome</label>
+      <input id="nome" name="nome" [(ngModel)]="nome" required maxlength="100" autocomplete="off" />
+    </div>
+    <button type="submit" [disabled]="form.invalid || salvando() || carregando()">
+      {{ salvando() ? 'Salvando...' : 'Salvar' }}
+    </button>
+    @if (editando()) {
+      <button type="button" (click)="cancelarEdicao()" [disabled]="salvando()">
+        Cancelar edição
+      </button>
+    }
+  </form>
+</section>
+<section class="panel lista-panel" aria-labelledby="lista-titulo">
+  <h3 id="lista-titulo">{{ titulo }} cadastradas</h3>
+  @if (carregando()) {
+    <p role="status">Carregando...</p>
+  } @else {
+    <ul class="lista-cadastros">
+      @for (item of itens(); track item.id) {
+        <li>
+          <span>{{ item.nome }}</span>
+          @if (recurso === 'contas') {
+            <div class="acoes-cadastro">
+              <button
+                type="button"
+                (click)="editar(item)"
+                [disabled]="salvando()"
+                [attr.aria-label]="'Editar ' + item.nome"
+              >
+                Editar
+              </button>
+              <button
+                type="button"
+                (click)="exclusao.set(item)"
+                [disabled]="salvando()"
+                [attr.aria-label]="'Excluir ' + item.nome"
+              >
+                Excluir
+              </button>
+            </div>
+            @if (exclusao()?.id === item.id) {
+              <p>
+                Excluir a conta {{ item.nome }}? Contas com lançamentos não podem ser excluídas.
+              </p>
+              <div class="acoes-cadastro">
+                <button type="button" (click)="excluir()" [disabled]="salvando()">
+                  Confirmar exclusão
+                </button>
+                <button type="button" (click)="exclusao.set(null)" [disabled]="salvando()">
+                  Cancelar exclusão
+                </button>
+              </div>
+            }
+          }
+        </li>
+      } @empty {
+        <li>Nenhum cadastro por enquanto.</li>
+      }
+    </ul>
+  }
+</section>

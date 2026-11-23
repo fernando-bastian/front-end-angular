@@ -1,0 +1,29 @@
+<header class="page-heading">
+  <h2>Visão geral</h2>
+  <p>Seu dinheiro, conta por conta.</p>
+</header>
+@if (erro()) {
+  <p class="mensagem erro" role="alert">{{ erro() }}</p>
+} @else if (saldos(); as dados) {
+  <section class="saldo-geral" aria-labelledby="saldo-geral-titulo">
+    <h3 id="saldo-geral-titulo">Saldo geral</h3>
+    <p class="valor-destaque">{{ dados.saldoGeral | currency: 'BRL' }}</p>
+    <a routerLink="/transacoes">Lançar receita ou despesa</a>
+  </section>
+  <h3 class="titulo-secao">Saldo por conta</h3>
+  <div class="grade-saldos">
+    @for (conta of dados.contas; track conta.contaId) {
+      <article class="panel saldo-conta">
+        <h3>{{ conta.nome }}</h3>
+        <p class="valor-conta">{{ conta.saldo | currency: 'BRL' }}</p>
+      </article>
+    } @empty {
+      <section class="panel lista-panel">
+        <p>Você ainda não tem contas.</p>
+        <a routerLink="/contas">Cadastrar a primeira conta</a>
+      </section>
+    }
+  </div>
+} @else {
+  <p role="status">Carregando saldos...</p>
+}
