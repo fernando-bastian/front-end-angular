@@ -53,5 +53,3 @@ Os testes cobrem autenticação, CSRF, sessão, navegação protegida, cadastros
 ## Back-end
 
 [back-end-quarkus](https://github.com/fernando-bastian/back-end-quarkus)
-
-O [guia de apresentação](https://github.com/fernando-bastian/back-end-quarkus/blob/main/docs/guia-apresentacao.md) explica o projeto completo, os arquivos principais, o fluxo entre interface, API e banco, e inclui um roteiro de demonstração.
