@@ -4,6 +4,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideRouter, Router } from '@angular/router';
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { Api } from './api';
+import { mensagemErro } from './formulario';
 
 describe('integração HTTP', () => {
   let api: Api;
@@ -16,6 +17,83 @@ describe('integração HTTP', () => {
     http = TestBed.inject(HttpTestingController);
   });
   afterEach(() => http.verify());
+
+  it('explica uma resposta HTML recebida com status de sucesso', () => {
+    let mensagem = '';
+    api.saldos().subscribe({ error: (error) => (mensagem = mensagemErro(error)) });
+    http.expectOne('/api/saldos').flush('<!doctype html><html></html>');
+    expect(mensagem).toContain('resposta da API');
+  });
+
+  it('preserva os centavos dos saldos sem converter os identificadores em texto', () => {
+    let resultado: unknown;
+    api.saldos().subscribe((saldos) => (resultado = saldos));
+    http
+      .expectOne('/api/saldos')
+      .flush(
+        '{"contas":[{"contaId":1,"nome":"Banco","saldo":9007199254740993.01}],"saldoGeral":-9007199254740992.99}',
+      );
+    expect(resultado).toEqual({
+      contas: [{ contaId: 1, nome: 'Banco', saldo: '9007199254740993.01' }],
+      saldoGeral: '-9007199254740992.99',
+    });
+  });
+
+  it('preserva o valor retornado ao registrar uma transação', () => {
+    let resultado: unknown;
+    api
+      .lancar({
+        contaId: 1,
+        categoriaId: 2,
+        tipo: 'RECEITA',
+        valor: '9007199254740993.01',
+        data: '2026-11-23',
+        descricao: '',
+      })
+      .subscribe((transacao) => (resultado = transacao));
+    http.expectOne('/api/auth/csrf').flush({ token: 'csrf' });
+    http
+      .expectOne('/api/transacoes')
+      .flush(
+        '{"id":3,"contaId":1,"categoriaId":2,"tipo":"RECEITA","valor":9007199254740993.01,"data":"2026-11-23","descricao":"","transferenciaId":null}',
+      );
+    expect(resultado).toMatchObject({ id: 3, contaId: 1, valor: '9007199254740993.01' });
+  });
+
+  it('mantém a mensagem de erro JSON ao ler respostas como texto', () => {
+    let mensagem = '';
+    api.contas().subscribe({ error: (error) => (mensagem = error.error.mensagem) });
+    http.expectOne('/api/contas').flush('{"mensagem":"Acesso negado."}', {
+      status: 403,
+      statusText: 'Forbidden',
+    });
+    expect(mensagem).toBe('Acesso negado.');
+  });
+
+  it('preserva zero e centavos nas consultas de transações', () => {
+    let resultado: unknown;
+    api.transacoes().subscribe((itens) => (resultado = itens));
+    http
+      .expectOne('/api/transacoes')
+      .flush(
+        '[{"id":1,"contaId":2,"categoriaId":3,"tipo":"RECEITA","valor":0.01,"data":"2026-11-23","descricao":"Texto com 9007199254740993.01","transferenciaId":null}]',
+      );
+    expect(resultado).toEqual([
+      {
+        id: 1,
+        contaId: 2,
+        categoriaId: 3,
+        tipo: 'RECEITA',
+        valor: '0.01',
+        data: '2026-11-23',
+        descricao: 'Texto com 9007199254740993.01',
+        transferenciaId: null,
+      },
+    ]);
+    api.saldos().subscribe((saldos) => (resultado = saldos));
+    http.expectOne('/api/saldos').flush('{"contas":[],"saldoGeral":0.00}');
+    expect(resultado).toEqual({ contas: [], saldoGeral: '0.00' });
+  });
 
   it('obtém CSRF antes do login e mantém apenas os dados do usuário em memória', () => {
     api.login('ana@exemplo.com', 'senha').subscribe();

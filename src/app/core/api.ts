@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { isLosslessNumber, parse } from 'lossless-json';
 import {
   catchError,
   defer,
@@ -101,11 +102,18 @@ export class Api {
 
   private get<T>(path: string, params?: HttpParams): Observable<T> {
     return this.http
-      .get<T>(`/api/${path}`, { withCredentials: true, params })
-      .pipe(catchError((error) => this.tratarErro(error, path)));
+      .get(`/api/${path}`, { withCredentials: true, params, responseType: 'text' })
+      .pipe(
+        map((body) => this.lerResposta<T>(body)),
+        catchError((error) => this.tratarErro(error, path)),
+      );
   }
 
-  private enviar<T>(path: string, body: unknown, metodo: 'POST' | 'PUT' | 'DELETE' = 'POST'): Observable<T> {
+  private enviar<T>(
+    path: string,
+    body: unknown,
+    metodo: 'POST' | 'PUT' | 'DELETE' = 'POST',
+  ): Observable<T> {
     // o cookie CSRF é assinado; o cabeçalho usa o token original retornado pela API
     return defer(() =>
       this.csrf
@@ -116,17 +124,48 @@ export class Api {
           ),
     ).pipe(
       switchMap((token) =>
-        this.http.request<T>(metodo, `/api/${path}`, {
+        this.http.request(metodo, `/api/${path}`, {
           body,
           withCredentials: true,
+          responseType: 'text',
           headers: { 'X-XSRF-TOKEN': token },
         }),
       ),
+      map((body) => this.lerResposta<T>(body)),
       catchError((error) => this.tratarErro(error, path)),
     );
   }
 
+  private lerResposta<T>(body: string | null): T {
+    // Os decimais precisam ser preservados antes da conversão padrão do JSON para number.
+    try {
+      return (
+        body
+          ? parse(body, (key, value) => {
+              if (!isLosslessNumber(value)) return value;
+              return ['valor', 'saldo', 'saldoGeral'].includes(key)
+                ? value.toString()
+                : Number(value);
+            })
+          : null
+      ) as T;
+    } catch (error) {
+      throw new HttpErrorResponse({ status: 200, error: { error, text: body } });
+    }
+  }
+
   private tratarErro(error: HttpErrorResponse, path: string): Observable<never> {
+    if (typeof error.error === 'string') {
+      try {
+        error = new HttpErrorResponse({
+          ...error,
+          url: error.url ?? undefined,
+          error: JSON.parse(error.error),
+        });
+      } catch {
+        // Respostas de proxies podem conter HTML em vez do erro JSON da API.
+      }
+    }
     if (error.status === 401 && !path.startsWith('auth/')) {
       this.usuario.set(null);
       this.sessaoVerificada = false;

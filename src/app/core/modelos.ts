@@ -28,7 +28,7 @@ export interface Transacao {
   contaId: number;
   categoriaId: number | null;
   tipo: Natureza | 'TRANSFERENCIA_SAIDA' | 'TRANSFERENCIA_ENTRADA';
-  valor: number;
+  valor: string;
   data: string;
   descricao: string | null;
   transferenciaId: string | null;
@@ -36,9 +36,9 @@ export interface Transacao {
 export interface SaldoConta {
   contaId: number;
   nome: string;
-  saldo: number;
+  saldo: string;
 }
 export interface Saldos {
   contas: SaldoConta[];
-  saldoGeral: number;
+  saldoGeral: string;
 }

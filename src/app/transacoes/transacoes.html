@@ -123,7 +123,7 @@
               <td>{{ nomeCategoria(item.categoriaId) }}</td>
               <td>{{ tipoTexto(item.tipo) }}</td>
               <td>{{ item.descricao || '—' }}</td>
-              <td class="numero">{{ item.valor | currency: 'BRL' }}</td>
+              <td class="numero">{{ item.valor | moeda }}</td>
             </tr>
           } @empty {
             <tr>

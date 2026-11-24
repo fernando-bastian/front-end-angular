@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
+import { MoedaPipe } from '../core/moeda.pipe';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -9,7 +10,7 @@ import { hoje, mensagemErro, valorMonetario } from '../core/formulario';
 
 @Component({
   selector: 'app-transacoes',
-  imports: [FormsModule, CurrencyPipe, DatePipe, RouterLink],
+  imports: [FormsModule, MoedaPipe, DatePipe, RouterLink],
   templateUrl: './transacoes.html',
 })
 export class Transacoes implements OnInit {

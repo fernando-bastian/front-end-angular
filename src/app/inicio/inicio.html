@@ -7,7 +7,7 @@
 } @else if (saldos(); as dados) {
   <section class="saldo-geral" aria-labelledby="saldo-geral-titulo">
     <h3 id="saldo-geral-titulo">Saldo geral</h3>
-    <p class="valor-destaque">{{ dados.saldoGeral | currency: 'BRL' }}</p>
+    <p class="valor-destaque">{{ dados.saldoGeral | moeda }}</p>
     <a routerLink="/transacoes">Lançar receita ou despesa</a>
   </section>
   <h3 class="titulo-secao">Saldo por conta</h3>
@@ -15,7 +15,7 @@
     @for (conta of dados.contas; track conta.contaId) {
       <article class="panel saldo-conta">
         <h3>{{ conta.nome }}</h3>
-        <p class="valor-conta">{{ conta.saldo | currency: 'BRL' }}</p>
+        <p class="valor-conta">{{ conta.saldo | moeda }}</p>
       </article>
     } @empty {
       <section class="panel lista-panel">

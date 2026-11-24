@@ -6,6 +6,28 @@ import { describe, expect, it } from 'vitest';
 import { Transacoes } from './transacoes';
 
 describe('consulta de transações', () => {
+  it('mostra os centavos exatos de transações grandes retornadas pela API', async () => {
+    TestBed.configureTestingModule({
+      imports: [Transacoes],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+    });
+    const http = TestBed.inject(HttpTestingController);
+    const fixture = TestBed.createComponent(Transacoes);
+    fixture.detectChanges();
+    http.expectOne('/api/contas').flush([{ id: 1, nome: 'Banco' }]);
+    http.expectOne('/api/categorias').flush([{ id: 2, nome: 'Salário' }]);
+    http
+      .expectOne('/api/transacoes')
+      .flush(
+        '[{"id":3,"contaId":1,"categoriaId":2,"tipo":"RECEITA","valor":9007199254740993.01,"data":"2026-11-23","descricao":"Pagamento","transferenciaId":null}]',
+      );
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('tbody td.numero').textContent).toBe(
+      'R$\u00a09.007.199.254.740.993,01',
+    );
+    http.verify();
+  });
+
   it('envia os filtros escolhidos na tela e mostra somente o resultado retornado', async () => {
     TestBed.configureTestingModule({
       imports: [Transacoes],
@@ -30,19 +52,17 @@ describe('consulta de transações', () => {
     fixture.nativeElement
       .querySelector('form.filtros')
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    http
-      .expectOne('/api/transacoes?contaId=1&categoriaId=2')
-      .flush([
-        {
-          id: 1,
-          contaId: 1,
-          categoriaId: 2,
-          tipo: 'RECEITA',
-          valor: 100,
-          data: '2026-11-16',
-          descricao: 'Pagamento',
-        },
-      ]);
+    http.expectOne('/api/transacoes?contaId=1&categoriaId=2').flush([
+      {
+        id: 1,
+        contaId: 1,
+        categoriaId: 2,
+        tipo: 'RECEITA',
+        valor: 100,
+        data: '2026-11-16',
+        descricao: 'Pagamento',
+      },
+    ]);
     await fixture.whenStable();
     expect(fixture.nativeElement.querySelector('tbody').textContent).toContain('Pagamento');
     expect(fixture.nativeElement.querySelector('tbody').textContent).toContain('Salário');

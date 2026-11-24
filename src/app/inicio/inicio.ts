@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
+import { MoedaPipe } from '../core/moeda.pipe';
 import { RouterLink } from '@angular/router';
 import { Api } from '../core/api';
 import { Saldos } from '../core/modelos';
@@ -7,7 +7,7 @@ import { mensagemErro } from '../core/formulario';
 
 @Component({
   selector: 'app-inicio',
-  imports: [CurrencyPipe, RouterLink],
+  imports: [MoedaPipe, RouterLink],
   templateUrl: './inicio.html',
 })
 export class Inicio implements OnInit {
